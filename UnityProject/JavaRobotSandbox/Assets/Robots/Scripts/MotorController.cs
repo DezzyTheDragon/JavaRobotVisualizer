@@ -2,75 +2,54 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(HingeJoint))]
 public class MotorController : MonoBehaviour
 {
-    float gizmoSphereSize = 0.05f;
-    //float gizmoAxisSize = 0.1f;
+    //TODO: Add a queue system to buffer commands
 
-    Vector3 vectorMask = Vector3.one;
+    [Header("Rotation Behavior Values")]
+    [SerializeField] float springForce = 0;
+    [SerializeField] float damperForce = 0;
+    [Header("Speed Behavior Values")]
+    [SerializeField] float motorForce = 0;
 
-    public enum axis
-    {
-        lockX = 0, 
-        lockY = 1, 
-        lockZ = 2
-    }
-
-    [Header("Lock Rotation to axis")]
-    [SerializeField] axis axisLock;
+    HingeJoint joint;
+    JointMotor motor;
+    JointSpring spring;
 
     // Start is called before the first frame update
     void Start()
     {
-        if (axisLock == axis.lockX)
-        {
-            vectorMask = new Vector3(1, 0, 0);
-        }
-        else if (axisLock == axis.lockY)
-        {
-            vectorMask = new Vector3(0, 1, 0);
-        }
-        else if (axisLock == axis.lockZ)
-        {
-            vectorMask = new Vector3(0, 0, 1);
-        }
+        joint = GetComponent<HingeJoint>();
+        motor = new JointMotor();
+        motor.force = motorForce;
+        spring = new JointSpring();
+        spring.spring = springForce;
+        spring.damper = damperForce;
     }
 
-    // Update is called once per frame
-    void Update()
+    //Utalizes physics so we need to use FixedUpdate
+    private void FixedUpdate()
     {
-        
     }
 
     //Set the angle of the motor
     public void setRotation(float angle)
     {
-        Debug.Log(this.gameObject.name + " " + (vectorMask * angle).ToString());
-        //Rotate object along its set axis
-        this.transform.Rotate((vectorMask * angle));
+        //Debug.Log(this.gameObject.name + " attempting to reach " +  angle);
+
+        spring.targetPosition = angle;
+        joint.useMotor = false;
+        joint.useSpring = true;
+        joint.spring = spring;
     }
 
-    public void setSpeed() 
-    { 
-
-    }
-
-    private void OnDrawGizmos()
+    public void setSpeed(float speed) 
     {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, gizmoSphereSize);
-
-        /*if (axisLock == axis.lockX) {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(transform.position, new Vector3(0, gizmoAxisSize, gizmoAxisSize));
-        }
-        else if (axisLock == axis.lockY) {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireCube(transform.position, new Vector3(gizmoAxisSize, 0, gizmoAxisSize));
-        }
-        else if (axisLock == axis.lockZ) {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireCube(transform.position, new Vector3(gizmoAxisSize, gizmoAxisSize, 0));
-        }*/
+        motor.targetVelocity = speed;
+        joint.useSpring = false;
+        joint.useMotor = true;
+        joint.motor = motor;
     }
+
 }

@@ -69,7 +69,7 @@ public class RobotBehavior : MonoBehaviour
         processInfo.UseShellExecute = true;
 
         process = Process.Start(processInfo);
-        //Can probably stop the robot with process.Close();
+        //Can probably stop the robot terminal with process.Close();
     }
 
     //Connects to the robot server
@@ -136,6 +136,7 @@ public class RobotBehavior : MonoBehaviour
                 motors[msg.motorID].setRotation(msg.motorData);
                 break;
             case 1:
+                motors[msg.motorID].setSpeed(msg.motorData);
                 break;
             default:
                 UnityEngine.Debug.LogWarning("Robot sent invalid action");

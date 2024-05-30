@@ -1,0 +1,52 @@
+{
+    "name": "RobotInput",
+    "maps": [
+        {
+            "name": "RobotInput",
+            "id": "a5d7d266-4c0c-4cbd-807f-84ee98a18c22",
+            "actions": [
+                {
+                    "name": "CameraRotate",
+                    "type": "PassThrough",
+                    "id": "36f2f673-5af4-455f-a0fd-cc3e0f4d9691",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Rotate",
+                    "type": "Button",
+                    "id": "a3bfba73-22f6-4591-998f-42d71199de7e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "ea28bb0d-d043-4802-9432-40fe9788963f",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraRotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8c60152e-1d23-4c90-9ce8-765f8858fa73",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
