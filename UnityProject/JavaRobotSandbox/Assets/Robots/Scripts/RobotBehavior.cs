@@ -5,6 +5,7 @@ using System.IO;
 using System.Net.Sockets;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 //Container to deserialize the message type value
 [System.Serializable]
@@ -24,16 +25,18 @@ public class MotorMessage
 
 public class RobotBehavior : MonoBehaviour
 {
-    [SerializeField]
+    [SerializeField, Header("Robot Motors")]
     List<MotorController> motors = new List<MotorController>();
     int robotPort = 55555;
 
+    [Header("UI Elements")]
     public TMP_InputField directory;
+    public Toggle consoleToggle;
 
     //private string testJar = "C:\\Users\\DestinyG\\Desktop\\UnityDummyRobot\\UnityDummyRobot.jar";
     private Process process;
     private NetworkStream networkStream;
-    private bool DEBUG = true;
+    private bool DEBUG = false;
 
     // Start is called before the first frame update
     void Start()
@@ -65,8 +68,21 @@ public class RobotBehavior : MonoBehaviour
         
         //processInfo = new ProcessStartInfo("cmd.exe", "/K java -jar " + testJar);
         processInfo = new ProcessStartInfo("cmd.exe", "/K java -jar " + directory.text);
-        processInfo.CreateNoWindow = !DEBUG;
+        processInfo.CreateNoWindow = false;
         processInfo.UseShellExecute = true;
+
+        if(consoleToggle != null)
+        {
+            if (!consoleToggle.isOn)
+            {
+                processInfo.WindowStyle = ProcessWindowStyle.Minimized;
+            }
+        }
+        else
+        {
+            UnityEngine.Debug.LogWarning("No reference to UI Toggle");
+        }
+        
 
         process = Process.Start(processInfo);
         //Can probably stop the robot terminal with process.Close();
@@ -139,7 +155,7 @@ public class RobotBehavior : MonoBehaviour
                 motors[msg.motorID].setSpeed(msg.motorData);
                 break;
             default:
-                UnityEngine.Debug.LogWarning("Robot sent invalid action");
+                UnityEngine.Debug.LogWarning("Robot sent invalid motor action");
                 break;
         }
     }

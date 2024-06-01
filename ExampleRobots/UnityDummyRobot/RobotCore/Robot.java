@@ -12,8 +12,9 @@ public class Robot {
 
         fred = new Arm();
 
-        fred.base.rotate(45);
-        fred.upperArm.rotate(60);
+        //fred.base.rotate(45);
+        fred.base.spin(25);
+        fred.upperArm.rotate(45);
         fred.lowerArm.rotate(15);
 
         network.stopNetwork();

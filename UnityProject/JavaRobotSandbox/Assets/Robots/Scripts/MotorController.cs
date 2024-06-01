@@ -26,6 +26,11 @@ public class MotorController : MonoBehaviour
         spring = new JointSpring();
         spring.spring = springForce;
         spring.damper = damperForce;
+
+        //Default motor behavior
+        spring.targetPosition = 0;
+        joint.useSpring = true;
+        joint.spring = spring;
     }
 
     //Utalizes physics so we need to use FixedUpdate

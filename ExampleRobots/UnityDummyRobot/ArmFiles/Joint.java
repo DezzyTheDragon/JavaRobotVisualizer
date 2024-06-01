@@ -28,4 +28,8 @@ public class Joint {
         jointMotor.setRotation(this.angle);
     }
 
+    public void spin(double speed){
+        jointMotor.setSpeed(speed);
+    }
+
 }
