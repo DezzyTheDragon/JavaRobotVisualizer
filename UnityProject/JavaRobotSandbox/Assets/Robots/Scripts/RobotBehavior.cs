@@ -23,38 +23,27 @@ public class MotorMessage
     public float motorData;
 }
 
+//Define base robot behavior, starting the robot server and managing the communication to the robot server
 public class RobotBehavior : MonoBehaviour
 {
     [SerializeField, Header("Robot Motors")]
     List<MotorController> motors = new List<MotorController>();
-    int robotPort = 55555;
+    int robotPort = 55555;  //Arbitrary port that isn't reserved by windows, can easily be changed as long as it matches the port in RobotNetwork.java
 
     [Header("UI Elements")]
     public TMP_InputField directory;
     public Toggle consoleToggle;
 
-    //private string testJar = "C:\\Users\\DestinyG\\Desktop\\UnityDummyRobot\\UnityDummyRobot.jar";
     private Process process;
     private NetworkStream networkStream;
-    private bool DEBUG = false;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        //StartRobot();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void FixedUpdate()
     {
+        //Pull data from the robot network at a fixed rate
         readNetwork();
     }
 
+    //Starts the robot server and connects to it
     public void StartRobot() {
         ExecuteRobotJar();
         StartNetwork();
@@ -88,7 +77,7 @@ public class RobotBehavior : MonoBehaviour
         //Can probably stop the robot terminal with process.Close();
     }
 
-    //Connects to the robot server
+    //Connects to the robot server on localhost
     void StartNetwork()
     {
         UnityEngine.Debug.Log("Connecting robot network");
@@ -101,6 +90,7 @@ public class RobotBehavior : MonoBehaviour
         //networkStream.Write(sendBuffer, 0, sendBuffer.Length);
     }
 
+    //Reads the robot network and parses the message type
     void readNetwork()
     {
         if (networkStream == null)
@@ -109,8 +99,8 @@ public class RobotBehavior : MonoBehaviour
         }
         byte[] buffer = new byte[1024];
         Int32 bytes = networkStream.Read(buffer, 0, buffer.Length);
+        //The messages can get buffered so multiple json can be sent at a time so it needs to be split
         String[] robotMessages = System.Text.Encoding.UTF8.GetString(buffer, 0, bytes).Split('\n');
-        //String robotMessage = System.Text.Encoding.UTF8.GetString(buffer, 0, bytes);
         if (bytes != 0)
         {
             //UnityEngine.Debug.Log("Received " + bytes + " bytes from robot");
@@ -118,6 +108,7 @@ public class RobotBehavior : MonoBehaviour
 
             foreach(String robotMessage in robotMessages)
             {
+                //Check to make sure the element is an actual json and not an empty string from the split
                 if(robotMessage.Length > 0)
                 {
                     //UnityEngine.Debug.Log("Robot message:\n" + robotMessage);
@@ -141,6 +132,7 @@ public class RobotBehavior : MonoBehaviour
         }
     }
 
+    //Takes the json from the robot network, calling the appropriate function on the specified motor and passing it the data.
     void parseMotorMessage(String message) {
 
         MotorMessage msg = JsonUtility.FromJson<MotorMessage>(message);
@@ -159,5 +151,7 @@ public class RobotBehavior : MonoBehaviour
                 break;
         }
     }
+
+    //TODO: Take the json and handle the command send from robot server
     void parseCommandMessage(byte[] msgBuff, int size) { }
 }

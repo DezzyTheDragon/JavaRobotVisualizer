@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+//Manages the UI elements
 public class UIManager : MonoBehaviour
 {
     public TMP_InputField directory;
@@ -21,12 +22,7 @@ public class UIManager : MonoBehaviour
         detailsRectTransform = detailsPanel.GetComponent<RectTransform>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    //Shows or Hides the the robot details panel
     public void toggleDetailsPanel()
     {
         detailsHidden = !detailsHidden;
@@ -42,17 +38,20 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    //Reloads the current scene
     public void reloadScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
+    //Saves the given directory of the robot server jar
     public void updateSavedDir()
     {
         PlayerPrefs.SetString("dir", directory.text);
         PlayerPrefs.Save();
     }
 
+    //Load the given directory of the robot server jar
     public void loadDir()
     {
         string dir = PlayerPrefs.GetString("dir");

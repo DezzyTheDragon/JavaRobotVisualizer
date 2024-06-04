@@ -4,15 +4,17 @@ using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+//Allows the user to rotate the camera around the robot
+//  Expects that the camera is attached to an empty game object
+//  and this script is attached to the empty game object
 public class CameraControll : MonoBehaviour
 {
     [SerializeField] GameObject cam;
-    [SerializeField] float angleMin = -85;
-    [SerializeField] float angleMax = 85;
-    [SerializeField] private float camDist = 4;
-
-    private float sensitivity = 1;
-
+    [SerializeField] float angleMin = -85;              //The lowest the camera can go
+    [SerializeField] float angleMax = 85;               //The highest the camera can go
+    [SerializeField] private float camDist = 4;         //The max distance away from the gameobject the camera can go
+    [SerializeField] private float sensitivity = 1;     //Mouse sensitivity
+    [SerializeField] private float distBuffer = 0.5f;   //This pulls the camera closer to avoid cliping with ground
     
     private float xRot;
     private float yRot;
@@ -20,12 +22,10 @@ public class CameraControll : MonoBehaviour
     private Vector2 delta;
     private bool isRotating;
 
-    
     //Mask out the robot so ray does not collide with it
+    //  Expects that the robot layer is on layer 8
     private int layerMask = ~(1 << 8);
-    //This pulls the camera closer to avoid cliping
-    private float distBuffer = 0.5f;
-
+    
     private void Start()
     {
         xRot = transform.localRotation.eulerAngles.y;

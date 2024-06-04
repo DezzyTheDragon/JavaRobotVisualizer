@@ -2,35 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Provides an easy way to controll hinge joint spring and motor
 [RequireComponent(typeof(HingeJoint))]
 public class MotorController : MonoBehaviour
 {
     //TODO: Add a queue system to buffer commands
 
     [Header("Rotation Behavior Values")]
-    [SerializeField] float springForce = 0;
-    [SerializeField] float damperForce = 0;
+    [SerializeField] protected float springForce = 0;
+    [SerializeField] protected float damperForce = 0;
     [Header("Speed Behavior Values")]
-    [SerializeField] float motorForce = 0;
+    [SerializeField] protected float motorForce = 0;
 
-    HingeJoint joint;
-    JointMotor motor;
-    JointSpring spring;
+    private HingeJoint joint;
+    protected JointMotor motor;
+    protected JointSpring spring;
 
     // Start is called before the first frame update
     void Start()
     {
-        joint = GetComponent<HingeJoint>();
-        motor = new JointMotor();
-        motor.force = motorForce;
-        spring = new JointSpring();
-        spring.spring = springForce;
-        spring.damper = damperForce;
+        //Debug.Log("Motor Controller: " + gameObject.name);
 
-        //Default motor behavior
-        spring.targetPosition = 0;
-        joint.useSpring = true;
-        joint.spring = spring;
+        joint = GetComponent<HingeJoint>();
+        initJoint();
+
+        //Default motor behavior is maintain default position
+        setRotation(0);
     }
 
     //Utalizes physics so we need to use FixedUpdate
@@ -38,8 +35,18 @@ public class MotorController : MonoBehaviour
     {
     }
 
+    //Initializes the template motor and springs
+    protected void initJoint() 
+    {
+        motor = new JointMotor();
+        motor.force = motorForce;
+        spring = new JointSpring();
+        spring.spring = springForce;
+        spring.damper = damperForce;
+    }
+
     //Set the angle of the motor
-    public void setRotation(float angle)
+    public virtual void setRotation(float angle)
     {
         //Debug.Log(this.gameObject.name + " attempting to reach " +  angle);
 
@@ -49,7 +56,8 @@ public class MotorController : MonoBehaviour
         joint.spring = spring;
     }
 
-    public void setSpeed(float speed) 
+    //Set the speed of the motor
+    public virtual void setSpeed(float speed) 
     {
         motor.targetVelocity = speed;
         joint.useSpring = false;
