@@ -6,10 +6,11 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+//Class that handles the robot server
 public class RobotNetwork {
     private static RobotNetwork networkInstance;
 
-    private static final int port = 55555;
+    private static final int port = 55555;  //Port randomly chosen, can be changed as long as it maches in the Unity Client
     ServerSocket serverSocket;
     Socket clientSocket;
     PrintWriter out;
@@ -36,7 +37,6 @@ public class RobotNetwork {
     //Format motor data and send to Unity
     public void bufferMotorData(int motorID, int dataType, double data){
         //Format the message using json
-        //TODO: Add a \n at the end of the message. Then on Unity side seperate by \n
         String motorJson = String.format("{\"msg_type\": 1, \"motorID\": %d, \"actionType\": %d, \"motorData\": %e}", motorID, dataType, data);
 
         pushData(motorJson);
