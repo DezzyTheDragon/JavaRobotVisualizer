@@ -1,4 +1,5 @@
 package RobotCore;
+import org.json.*;
 
 //A simple controller that simplifies sending motor data to the Unity Client
 public class UnityMotorController {
@@ -7,7 +8,8 @@ public class UnityMotorController {
 
     private enum motorDataType{
         ROTATION, 
-        CONST_SPEED
+        CONST_SPEED,
+        ENCODER_REQUEST
     }
 
     //Preffered constructor
@@ -33,5 +35,22 @@ public class UnityMotorController {
         else{
             System.out.println("Invalid motor id of -1");
         }
+    }
+
+    //Get the angle of the Unity Motor
+    public double getAngle(){
+        //Sensor value request
+        network.bufferMotorData(motorID, motorDataType.ENCODER_REQUEST.ordinal(), 0);
+        //Sensor value response
+        JSONObject unityMsg = network.pollData();
+        double encoderValue = 0;
+        //Message Validation
+        if(unityMsg.getInt("msg_type") == 2 && unityMsg.getInt("sensorID") == motorID){
+            encoderValue = unityMsg.getFloat("sensorData");
+        }
+        else{
+            System.out.println(String.format("Motor %d sensor error: Sensor data contains incorrect ID values", motorID));
+        }
+        return encoderValue;
     }
 }

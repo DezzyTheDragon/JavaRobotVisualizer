@@ -16,6 +16,9 @@ public class Robot {
         fred.base.spin(25);
         fred.upperArm.rotate(45);
         fred.lowerArm.rotate(15);
+        fred.claw.rotate(-45);
+
+        //System.out.println(fred.base.getAngle());
 
         network.stopNetwork();
     }

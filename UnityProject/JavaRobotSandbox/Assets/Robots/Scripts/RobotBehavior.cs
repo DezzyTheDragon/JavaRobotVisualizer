@@ -91,6 +91,7 @@ public class RobotBehavior : MonoBehaviour
     }
 
     //Reads the robot network and parses the message type
+    //void readNetwork()
     void readNetwork()
     {
         if (networkStream == null)
@@ -132,6 +133,12 @@ public class RobotBehavior : MonoBehaviour
         }
     }
 
+    void writeNetwork(string msg)
+    {
+        byte[] sendBuffer = System.Text.Encoding.UTF8.GetBytes(msg);
+        networkStream.Write(sendBuffer, 0, sendBuffer.Length);
+    }
+
     //Takes the json from the robot network, calling the appropriate function on the specified motor and passing it the data.
     void parseMotorMessage(String message) {
 
@@ -145,6 +152,12 @@ public class RobotBehavior : MonoBehaviour
                 break;
             case 1:
                 motors[msg.motorID].setSpeed(msg.motorData);
+                break;
+            case 2:
+                float encoderValue = motors[msg.motorID].getEncoder();
+                //string response = String.Format("{\"msg_type\": 2, \"sensorID\": {0}, \"sensorType\": {1}, \"sensorData\": {2}}", msg.motorID, 0, encoderValue);
+                string response = "{\"msg_type\": 2, \"sensorID\": -1, \"sensorType\": 0, \"sensorData\": 0}";
+                writeNetwork(response);
                 break;
             default:
                 UnityEngine.Debug.LogWarning("Robot sent invalid motor action");

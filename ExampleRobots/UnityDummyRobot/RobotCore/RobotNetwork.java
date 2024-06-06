@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import org.json.*;
 
 //Class that handles the robot server
 public class RobotNetwork {
@@ -49,8 +50,17 @@ public class RobotNetwork {
     }
 
     //Receive data from 
-    public byte[] pollData(){
-        return null;
+    public JSONObject pollData(){
+        String msg = "";
+        try{
+            msg = in.readLine();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        System.out.println(msg);
+        //String[] msgs = msg.split("[\n]");
+        //TODO: try to create some sort of subscriber that will handle updating values without needing a direct call
+        return new JSONObject(msg);
     }
 
     //Begins the TCP robot network and opening a port

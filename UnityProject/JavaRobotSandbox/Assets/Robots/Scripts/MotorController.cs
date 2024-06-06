@@ -65,4 +65,9 @@ public class MotorController : MonoBehaviour
         joint.motor = motor;
     }
 
+    public virtual float getEncoder()
+    {
+        return joint.angle;
+    }
+
 }

@@ -25,7 +25,7 @@ public class MultiMotorController : MotorController
     //Iterate through all hinge joints and set a target angle
     public override void setRotation(float angle)
     {
-        
+        Debug.Log("Setting multi-motor rotation");
         for(int i = 0; i < motorSet.Count; i++)
         {
             if (invertMotor[i])
