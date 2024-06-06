@@ -73,6 +73,7 @@ crashlytics-build.properties
 
 
 # Java build files
-*.jar
+ExampleRobots/UnityDummyRobot/*.jar
+ExampleRobots/*/.vscode/*
 
 *.zip
