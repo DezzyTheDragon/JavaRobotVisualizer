@@ -24,7 +24,7 @@ public class MotorMessage
 }
 
 //Define base robot behavior, starting the robot server and managing the communication to the robot server
-public class RobotBehavior : MonoBehaviour
+public class RobotBehavior : MonoBehaviour, IRobotUI
 {
     [SerializeField, Header("Robot Motors")]
     List<MotorController> motors = new List<MotorController>();
@@ -44,11 +44,23 @@ public class RobotBehavior : MonoBehaviour
     }
 
     //Starts the robot server and connects to it
-    public void StartRobot() {
+    public void startRobotServer() {
         ExecuteRobotJar();
         StartNetwork();
     }
 
+    public void closeRobotTerminal()
+    {
+        if(process != null)
+        {
+            process.CloseMainWindow();
+        }
+    }
+
+    public void setRobotServerPort(int port)
+    {
+        robotPort = port;
+    }
 
     //Starts the selected robot jar
     void ExecuteRobotJar()
@@ -72,9 +84,7 @@ public class RobotBehavior : MonoBehaviour
             UnityEngine.Debug.LogWarning("No reference to UI Toggle");
         }
         
-
         process = Process.Start(processInfo);
-        //Can probably stop the robot terminal with process.Close();
     }
 
     //Connects to the robot server on localhost
@@ -84,22 +94,18 @@ public class RobotBehavior : MonoBehaviour
         TcpClient tcpClient = new TcpClient("127.0.0.1", robotPort);
         networkStream = tcpClient.GetStream();
         UnityEngine.Debug.Log("Connected to robot");
-
-        //DEBUG SEND
-        //byte[] sendBuffer = System.Text.Encoding.UTF8.GetBytes("Hello Robot!");
-        //networkStream.Write(sendBuffer, 0, sendBuffer.Length);
     }
 
     //Reads the robot network and parses the message type
-    //void readNetwork()
-    void readNetwork()
+    async void readNetwork()
     {
         if (networkStream == null)
         {
             return;
         }
         byte[] buffer = new byte[1024];
-        Int32 bytes = networkStream.Read(buffer, 0, buffer.Length);
+        //Reading from network blocks so it should be done asynchronously to avoid halting the entire unity client
+        Int32 bytes = await networkStream.ReadAsync(buffer, 0, buffer.Length);
         //The messages can get buffered so multiple json can be sent at a time so it needs to be split
         String[] robotMessages = System.Text.Encoding.UTF8.GetString(buffer, 0, bytes).Split('\n');
         if (bytes != 0)
@@ -133,10 +139,16 @@ public class RobotBehavior : MonoBehaviour
         }
     }
 
+    //async void writeNetwork(string msg)
     void writeNetwork(string msg)
     {
+        //UnityEngine.Debug.Log("Attempting to write: " + msg);
         byte[] sendBuffer = System.Text.Encoding.UTF8.GetBytes(msg);
+        //UnityEngine.Debug.Log("Byte buffer: " + sendBuffer[0]);
         networkStream.Write(sendBuffer, 0, sendBuffer.Length);
+        //Writing to the network blocks so it needs to be done asynchronously
+        //await networkStream.WriteAsync(sendBuffer, 0, sendBuffer.Length);
+        //UnityEngine.Debug.Log("Wrote Message to network");
     }
 
     //Takes the json from the robot network, calling the appropriate function on the specified motor and passing it the data.
@@ -155,8 +167,10 @@ public class RobotBehavior : MonoBehaviour
                 break;
             case 2:
                 float encoderValue = motors[msg.motorID].getEncoder();
-                //string response = String.Format("{\"msg_type\": 2, \"sensorID\": {0}, \"sensorType\": {1}, \"sensorData\": {2}}", msg.motorID, 0, encoderValue);
-                string response = "{\"msg_type\": 2, \"sensorID\": -1, \"sensorType\": 0, \"sensorData\": 0}";
+                UnityEngine.Debug.Log($"Sending {encoderValue}");
+                string response = $"{{\"msg_type\": 2, \"sensorID\": {msg.motorID}, \"sensorType\": 0, \"sensorData\": {encoderValue}}}\n";
+                //string response = "{\"msg_type\": 2, \"sensorID\": -1, \"sensorType\": 0, \"sensorData\": 0}\n";    //NOTE: Remember to include '\n' in any string sent to robot server
+
                 writeNetwork(response);
                 break;
             default:

@@ -39,10 +39,17 @@ public class UnityMotorController {
 
     //Get the angle of the Unity Motor
     public double getAngle(){
+        //System.out.println("Sending Encoder Request");
         //Sensor value request
         network.bufferMotorData(motorID, motorDataType.ENCODER_REQUEST.ordinal(), 0);
+
+        //System.out.println("Get Encoder Response");
         //Sensor value response
         JSONObject unityMsg = network.pollData();
+        if(unityMsg == null){
+            System.out.println("JSON message is null");
+            return -999;
+        }
         double encoderValue = 0;
         //Message Validation
         if(unityMsg.getInt("msg_type") == 2 && unityMsg.getInt("sensorID") == motorID){

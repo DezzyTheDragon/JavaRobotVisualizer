@@ -6,8 +6,12 @@ using UnityEngine;
 [RequireComponent(typeof(HingeJoint))]
 public class MotorController : MonoBehaviour
 {
+    protected enum EncoderAxis { X_AXIS, Y_AXIS, Z_AXIS }
+
     //TODO: Add a queue system to buffer commands
 
+    [Header("Controller Settings")]
+    [SerializeField] protected EncoderAxis encoderAxis = EncoderAxis.X_AXIS;
     [Header("Rotation Behavior Values")]
     [SerializeField] protected float springForce = 0;
     [SerializeField] protected float damperForce = 0;
@@ -67,7 +71,23 @@ public class MotorController : MonoBehaviour
 
     public virtual float getEncoder()
     {
-        return joint.angle;
+        //Debug.Log(joint.angle);
+        //return joint.angle;
+        float encoderAngle = float.NaN;
+        switch (encoderAxis)
+        {
+            case EncoderAxis.X_AXIS: 
+                encoderAngle = this.gameObject.transform.localEulerAngles.x; 
+                break;
+            case EncoderAxis.Y_AXIS: 
+                encoderAngle = this.gameObject.transform.localEulerAngles.y; 
+                break;
+            case EncoderAxis.Z_AXIS: 
+                encoderAngle = this.gameObject.transform.localEulerAngles.z;
+                break;
+        }
+
+        return encoderAngle;
     }
 
 }

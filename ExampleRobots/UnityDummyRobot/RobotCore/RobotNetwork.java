@@ -11,7 +11,7 @@ import org.json.*;
 public class RobotNetwork {
     private static RobotNetwork networkInstance;
 
-    private static final int port = 55555;  //Port randomly chosen, can be changed as long as it maches in the Unity Client
+    private int port = 55555;  //Port randomly chosen, can be changed as long as it maches in the Unity Client
     ServerSocket serverSocket;
     Socket clientSocket;
     PrintWriter out;
@@ -22,7 +22,7 @@ public class RobotNetwork {
     //     MOTOR
     // }
 
-    RobotNetwork(){
+    private RobotNetwork(){
         //getInstance();
         //startNetwork();
     }
@@ -33,6 +33,12 @@ public class RobotNetwork {
             networkInstance = new RobotNetwork();
         }
         return networkInstance;
+    }
+
+    //This allows for the changing of the port the robot network uses.
+    //  NOTE: Idealy this should only really be used if there is a problem with the default port (process already bound to port)
+    public void setPort(int port){
+        this.port = port;
     }
 
     //Format motor data and send to Unity
@@ -51,16 +57,20 @@ public class RobotNetwork {
 
     //Receive data from 
     public JSONObject pollData(){
-        String msg = "";
+        //System.out.println("Waiting to read from network");
+        //String msg = "";
+        JSONObject data = null;
         try{
-            msg = in.readLine();
+            String msg = in.readLine();
+            data = new JSONObject(msg);
+            System.out.println(msg);
         }catch(IOException e){
             e.printStackTrace();
         }
-        System.out.println(msg);
-        //String[] msgs = msg.split("[\n]");
-        //TODO: try to create some sort of subscriber that will handle updating values without needing a direct call
-        return new JSONObject(msg);
+        //System.out.println("Recived: " + msg);
+        //TODO: consider creating some sort of subscriber that will handle updating values without needing a direct call
+        return data;
+        //return null;
     }
 
     //Begins the TCP robot network and opening a port

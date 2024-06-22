@@ -32,8 +32,8 @@ public class Joint {
         jointMotor.setSpeed(speed);
     }
 
-    // public double getAngle(){
-    //     return jointMotor.getAngle();
-    // }
+    public double getAngle(){
+        return jointMotor.getAngle();
+    }
 
 }
