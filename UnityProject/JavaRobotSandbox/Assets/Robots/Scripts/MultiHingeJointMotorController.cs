@@ -6,7 +6,7 @@ using UnityEngine;
 //This allows you to controll multiple elements that are ment to be tied together from one point
 //  For example a claw, each part has its own hinge joint, each moved and controlled as a single
 //  object
-public class MultiMotorController : MotorController
+public class MultiHingeJointMotorController : HingeJointMotorController
 {
     [Header("Controlled Motors")]
     public List<HingeJoint> motorSet    = new List<HingeJoint>();   //List of motors that need to be controlled

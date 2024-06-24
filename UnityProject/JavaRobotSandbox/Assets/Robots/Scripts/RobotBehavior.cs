@@ -27,8 +27,9 @@ public class MotorMessage
 public class RobotBehavior : MonoBehaviour, IRobotUI
 {
     [SerializeField, Header("Robot Motors")]
-    List<MotorController> motors = new List<MotorController>();
-    int robotPort = 55555;  //Arbitrary port that isn't reserved by windows, can easily be changed as long as it matches the port in RobotNetwork.java
+    List<BaseMotorController> motors = new List<BaseMotorController>();
+    //Arbitrary port that isn't reserved by windows, can be changed here or using UI, only requirement is the server uses the same port
+    int robotPort = 55555;
 
     [Header("UI Elements")]
     public TMP_InputField directory;

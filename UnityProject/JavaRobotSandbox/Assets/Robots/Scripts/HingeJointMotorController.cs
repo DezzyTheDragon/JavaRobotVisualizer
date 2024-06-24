@@ -4,7 +4,7 @@ using UnityEngine;
 
 //Provides an easy way to controll hinge joint spring and motor
 [RequireComponent(typeof(HingeJoint))]
-public class MotorController : MonoBehaviour
+public class HingeJointMotorController : BaseMotorController
 {
     protected enum EncoderAxis { X_AXIS, Y_AXIS, Z_AXIS }
 
@@ -25,8 +25,6 @@ public class MotorController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Debug.Log("Motor Controller: " + gameObject.name);
-
         joint = GetComponent<HingeJoint>();
         initJoint();
 
@@ -50,10 +48,8 @@ public class MotorController : MonoBehaviour
     }
 
     //Set the angle of the motor
-    public virtual void setRotation(float angle)
+    public override void setRotation(float angle)
     {
-        //Debug.Log(this.gameObject.name + " attempting to reach " +  angle);
-
         spring.targetPosition = angle;
         joint.useMotor = false;
         joint.useSpring = true;
@@ -61,7 +57,7 @@ public class MotorController : MonoBehaviour
     }
 
     //Set the speed of the motor
-    public virtual void setSpeed(float speed) 
+    public override void setSpeed(float speed) 
     {
         motor.targetVelocity = speed;
         joint.useSpring = false;
@@ -69,10 +65,10 @@ public class MotorController : MonoBehaviour
         joint.motor = motor;
     }
 
-    public virtual float getEncoder()
+    //Returns the current angle of the object controlled by the motor controller
+    public override float getEncoder()
     {
-        //Debug.Log(joint.angle);
-        //return joint.angle;
+        //Due to unknown weirdness of HingeJoint.angle returning NaN, using local rotation instead
         float encoderAngle = float.NaN;
         switch (encoderAxis)
         {
