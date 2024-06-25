@@ -1,6 +1,6 @@
 package ArmFiles;
 
-import RobotCore.UnityMotorController;
+import org.UnityRobotServer.UnityMotorController;
 
 public class Joint {
     private String jointName;

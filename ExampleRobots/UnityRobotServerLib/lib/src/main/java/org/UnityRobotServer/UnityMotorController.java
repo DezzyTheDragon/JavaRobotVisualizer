@@ -1,4 +1,4 @@
-package RobotCore;
+package org.UnityRobotServer;
 import org.json.*;
 
 //A simple controller that simplifies sending motor data to the Unity Client

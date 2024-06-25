@@ -1,6 +1,7 @@
 package RobotCore;
 
 import ArmFiles.Arm;
+import org.UnityRobotServer.RobotNetwork;
 
 public class Robot {
     private RobotNetwork network = RobotNetwork.getInstance();
