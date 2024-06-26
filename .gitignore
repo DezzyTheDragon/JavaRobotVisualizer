@@ -24,7 +24,7 @@
 /UnityProject/JavaRobotSandbox/[Aa]ssets/Plugins/Editor/JetBrains*
 
 # Visual Studio cache directory
-/UnityProject/JavaRobotSandbox.vs/
+/UnityProject/JavaRobotSandbox/.vs/
 
 # Gradle cache directory
 /UnityProject/JavaRobotSandbox.gradle/
